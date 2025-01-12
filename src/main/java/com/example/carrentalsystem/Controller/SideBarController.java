@@ -1,69 +1,60 @@
 package com.example.carrentalsystem.Controller;
 
+import com.example.carrentalsystem.Model.CarRecord;
+import com.jfoenix.controls.JFXButton;
+import javafx.application.Platform;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
-import javafx.scene.control.Button;
+import com.google.gson.JsonObject;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.text.Text;
+import org.json.JSONObject;
 
+import java.net.URI;
+
+
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
 import java.io.IOException;
 import java.net.URL;
-import java.util.ResourceBundle;
+
+
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class SideBarController implements Initializable {
+
+
+public class SideBarController {
 
     @FXML
     private BorderPane bp;
     @FXML
     private AnchorPane ap;
 
+    @FXML
+    private JFXButton dashboardButton, inventoryButton, bookingsButton, customerButton, settingsButton, transactionsButton, maintenanceLogButton, bookingsReportButton, incomeExpensesButton;
 
     @FXML
-    private Button dashboardButton;
-
-    @FXML
-    private Button inventoryButton;
-
-    @FXML
-    private Button bookingsButton;
-
-    @FXML
-    private Button customerButton;
-
-    @FXML
-    private Button settingsButton;
-
-    @FXML
-    private Button transactionsButton;
-
-    @FXML
-    private Button maintenanceLogButton;
-
-    @FXML
-    private Button bookingsReportButton;
-
-    @FXML
-    private Button incomeExpensesButton;
-
-    @FXML
-    private Text dashboardText;
+    private Text dashboardText, carNoDigit, customerNoDigit, carAvailableDigit;
 
     // Event handler for the "Dashboard" button
     @FXML
     private void dashboard(MouseEvent event) {
-    bp.setCenter(ap);
+        bp.setCenter(ap);
     }
 
     // Event handler for the "Inventory" button
     @FXML
     private void inventory(MouseEvent event) {
-      loadPage("inventory");;
+        loadPage("inventory");
     }
 
     // Event handler for the "Bookings" button
@@ -75,13 +66,13 @@ public class SideBarController implements Initializable {
     // Event handler for the "Customer" button
     @FXML
     private void customer() {
-      loadPage("customer");
+        loadPage("customer");
     }
 
     // Event handler for the "Settings" button
     @FXML
     private void settings() {
-       loadPage("settings");
+        loadPage("settings");
     }
 
     // Event handler for the "Transactions" button
@@ -112,20 +103,84 @@ public class SideBarController implements Initializable {
         System.out.println("Income & Expenses button clicked");
     }
 
-    private void loadPage(String page){
+    // Method to load pages based on button clicks
+    private void loadPage(String page) {
         Parent root = null;
-try {
-    root = FXMLLoader.load(getClass().getResource("/com/example/carrentalsystem/View/"+ page +".fxml"));
-
-} catch (IOException ex){
-Logger.getLogger(SideBarController.class.getName()).log(Level.SEVERE, null, ex);
-}
-bp.setCenter(root);
+        try {
+            URL fxmlURL = getClass().getResource("/com/example/carrentalsystem/View/" + page + ".fxml");
+            if (fxmlURL == null) {
+                throw new IOException("FXML file not found for page: " + page);
+            }
+            root = FXMLLoader.load(fxmlURL);
+        } catch (IOException ex) {
+            Logger.getLogger(SideBarController.class.getName()).log(Level.SEVERE, "Error loading page: " + page, ex);
+        }
+        if (root != null) {
+            bp.setCenter(root);
+        } else {
+            System.err.println("Root is null. Cannot set center for page: " + page);
+        }
     }
 
-    @Override
-    public void initialize(URL url, ResourceBundle rb) {
-        // Initialize any required logic here
-        System.out.println("SideBarController initialized");
+    // Fetch car count, customer count, and available cars data
+    private void fetchCarData() {
+        Task<Void> fetchDataTask = new Task<>() {
+            @Override
+            protected Void call() throws Exception {
+                try {
+                    HttpClient client = HttpClient.newHttpClient();
+                    HttpRequest request = HttpRequest.newBuilder()
+                            .uri(new URI("http://127.0.0.1/car-rental-api/get_car_count.php"))
+                            .GET()
+                            .build();
+
+                    HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+                    System.out.println("HTTP Response Code: " + response.statusCode());
+                    System.out.println("Response Body: " + response.body());
+
+                    if (response.statusCode() == 200) {
+                        JSONObject jsonResponse = new JSONObject(response.body());
+                        int carCount = jsonResponse.optInt("car_count", 0);
+                        int customerCount = jsonResponse.optInt("customer_count", 0);
+                        int availableCars = jsonResponse.optInt("available_cars", 0);
+
+                        Platform.runLater(() -> {
+                            carNoDigit.setText(String.valueOf(carCount));
+                            customerNoDigit.setText(String.valueOf(customerCount));
+                            carAvailableDigit.setText(String.valueOf(availableCars));
+                            System.out.println("UI updated successfully.");
+                        });
+                    } else {
+                        System.err.println("Failed to fetch data. HTTP Status: " + response.statusCode());
+                    }
+                } catch (Exception e) {
+                    System.err.println("Error fetching car data: " + e.getMessage());
+                    e.printStackTrace();
+                }
+                return null;
+            }
+        };
+
+        new Thread(fetchDataTask).start();
+    }
+
+
+    /**
+     * Prepare JSON data and print it to the console.
+     */
+    public void prepareJsonData() {
+        JsonObject jsonObject = new JsonObject();
+        jsonObject.addProperty("key", "value"); // Replace "key" and "value" with your actual data
+        System.out.println(jsonObject.toString()); // This prints the JSON to the console
+    }
+
+
+    // Call fetchCarData when the controller is initialized
+    @FXML
+    public void initialize() {
+        fetchCarData();  // Fetch data when the controller is initialized
     }
 }
+
+

@@ -1,17 +1,15 @@
 module com.example.carrentalsystem {
-    requires javafx.controls;
     requires javafx.fxml;
-    requires javafx.web;
+
 
     requires org.controlsfx.controls;
-    requires com.dlsc.formsfx;
-    requires net.synedra.validatorfx;
-    requires org.kordamp.ikonli.javafx;
-    requires org.kordamp.bootstrapfx.core;
-    requires eu.hansolo.tilesfx;
-    requires com.almasb.fxgl.all;
+
+    requires com.jfoenix;
+    requires java.net.http;
+
+    requires com.google.gson;
     requires java.logging;
-    requires java.desktop;
+    requires org.json;
 
     opens com.example.carrentalsystem to javafx.fxml;
 
@@ -19,4 +17,6 @@ module com.example.carrentalsystem {
     opens com.example.carrentalsystem.Controller to javafx.fxml;
 
     exports com.example.carrentalsystem;
+    exports com.example.carrentalsystem.Model;
+    opens com.example.carrentalsystem.Model to javafx.fxml;
 }

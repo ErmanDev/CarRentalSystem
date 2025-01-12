@@ -7,3 +7,15 @@
     -fx-background-color: transparent;
     -fx-text-fill: black;
 }
+
+.centered-column .table-column-header {
+    -fx-alignment: center;
+}
+
+.table-view .table-cell {
+    -fx-alignment: CENTER;
+}
+
+.background-color {
+ -fx-background-color: #628ECB;
+}

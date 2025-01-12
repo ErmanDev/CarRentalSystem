@@ -17,7 +17,7 @@ public class Main extends Application {
         Parent root = loader.load();
         Scene scene = new Scene(root);
 
-        scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/styles/style.css")).toExternalForm());
+
 
         primaryStage.setResizable(false);
         primaryStage.setTitle("Car Rental System");
