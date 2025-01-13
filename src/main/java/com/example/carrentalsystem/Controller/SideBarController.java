@@ -17,6 +17,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.text.Text;
 import org.json.JSONObject;
 
+import java.awt.*;
 import java.net.URI;
 
 
@@ -39,11 +40,16 @@ public class SideBarController {
     @FXML
     private AnchorPane ap;
 
+
+
     @FXML
     private JFXButton dashboardButton, inventoryButton, bookingsButton, customerButton, settingsButton, transactionsButton, maintenanceLogButton, bookingsReportButton, incomeExpensesButton;
 
     @FXML
     private Text dashboardText, carNoDigit, customerNoDigit, carAvailableDigit;
+
+    @FXML
+    private Label userNameLabel;
 
     // Event handler for the "Dashboard" button
     @FXML
@@ -178,6 +184,55 @@ public class SideBarController {
         new Thread(fetchDataTask).start();
     }
 
+    private void fetchCurrentUser() {
+        Task<Void> fetchDataTask = new Task<>() {
+            @Override
+            protected Void call() throws Exception {
+                try {
+                    HttpClient client = HttpClient.newHttpClient();
+                    HttpRequest request = HttpRequest.newBuilder()
+                            .uri(new URI("http://127.0.0.1/car-rental-api/get_user.php"))
+                            .GET()
+                            .build();
+
+                    HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+                    System.out.println("HTTP Response Code: " + response.statusCode());
+                    System.out.println("Response Body: " + response.body());
+
+                    if (response.statusCode() == 200) {
+                        JSONObject jsonResponse = new JSONObject(response.body());
+
+                        if (jsonResponse.optBoolean("success", false)) {
+                            JSONObject data = jsonResponse.optJSONObject("data");
+                            if (data != null) {
+                                String username = data.optString("username", "Unknown User");
+
+                                // Update the UI on the JavaFX Application Thread
+                                Platform.runLater(() -> {
+                                    userNameLabel.setText("Welcome, " + username + "!");
+                                });
+                            } else {
+                                System.err.println("No 'data' object found in the response.");
+                            }
+                        } else {
+                            System.err.println("API response indicates failure: " + jsonResponse.optString("message"));
+                        }
+                    } else {
+                        System.err.println("Failed to fetch data. HTTP Status: " + response.statusCode());
+                    }
+                } catch (Exception e) {
+                    System.err.println("Error fetching user data: " + e.getMessage());
+                    e.printStackTrace();
+                }
+                return null;
+            }
+        };
+
+        new Thread(fetchDataTask).start();
+    }
+
+
 
 
     /**
@@ -193,7 +248,9 @@ public class SideBarController {
     // Call fetchCarData when the controller is initialized
     @FXML
     public void initialize() {
+fetchCurrentUser();
         fetchCarData();
+
 
     }
 }

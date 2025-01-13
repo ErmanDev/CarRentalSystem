@@ -10,6 +10,7 @@ module com.example.carrentalsystem {
     requires com.google.gson;
     requires java.logging;
     requires org.json;
+    requires java.desktop;
 
     opens com.example.carrentalsystem to javafx.fxml;
 
