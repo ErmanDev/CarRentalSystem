@@ -122,7 +122,7 @@ public class SideBarController {
         }
     }
 
-    // Fetch car count, customer count, and available cars data
+
     private void fetchCarData() {
         Task<Void> fetchDataTask = new Task<>() {
             @Override
@@ -130,7 +130,7 @@ public class SideBarController {
                 try {
                     HttpClient client = HttpClient.newHttpClient();
                     HttpRequest request = HttpRequest.newBuilder()
-                            .uri(new URI("http://127.0.0.1/car-rental-api/get_car_count.php"))
+                            .uri(new URI("http://127.0.0.1/car-rental-api/get_count.php"))
                             .GET()
                             .build();
 
@@ -141,16 +141,28 @@ public class SideBarController {
 
                     if (response.statusCode() == 200) {
                         JSONObject jsonResponse = new JSONObject(response.body());
-                        int carCount = jsonResponse.optInt("car_count", 0);
-                        int customerCount = jsonResponse.optInt("customer_count", 0);
-                        int availableCars = jsonResponse.optInt("available_cars", 0);
 
-                        Platform.runLater(() -> {
-                            carNoDigit.setText(String.valueOf(carCount));
-                            customerNoDigit.setText(String.valueOf(customerCount));
-                            carAvailableDigit.setText(String.valueOf(availableCars));
-                            System.out.println("UI updated successfully.");
-                        });
+                        if (jsonResponse.optBoolean("success", false)) {
+                            JSONObject data = jsonResponse.optJSONObject("data");
+                            if (data != null) {
+                                // Fetch data from the 'data' object
+                                int carCount = Integer.parseInt(data.optString("car_count", "0"));
+                                int customerCount = Integer.parseInt(data.optString("customer_count", "0"));
+                                int availableCars = Integer.parseInt(data.optString("available_cars", "0"));
+
+                                Platform.runLater(() -> {
+                                    // Update the UI
+                                    carNoDigit.setText(String.valueOf(carCount));
+                                    customerNoDigit.setText(String.valueOf(customerCount));
+                                    carAvailableDigit.setText(String.valueOf(availableCars));
+                                    System.out.println("UI updated successfully.");
+                                });
+                            } else {
+                                System.err.println("No 'data' object found in the response.");
+                            }
+                        } else {
+                            System.err.println("API response indicates failure: " + jsonResponse.optString("message"));
+                        }
                     } else {
                         System.err.println("Failed to fetch data. HTTP Status: " + response.statusCode());
                     }
@@ -160,10 +172,12 @@ public class SideBarController {
                 }
                 return null;
             }
+
         };
 
         new Thread(fetchDataTask).start();
     }
+
 
 
     /**
@@ -179,7 +193,8 @@ public class SideBarController {
     // Call fetchCarData when the controller is initialized
     @FXML
     public void initialize() {
-        fetchCarData();  // Fetch data when the controller is initialized
+        fetchCarData();
+
     }
 }
 

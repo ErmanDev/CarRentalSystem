@@ -35,10 +35,10 @@
       </Text>
 
 
-        <TextField fx:id="usernameField" maxWidth="300" promptText="Username" style="-fx-font-size: 16;" />
+        <TextField id="uname" fx:id="usernameField" maxWidth="300" promptText="Username" style="-fx-font-size: 16;" />
 
 
-        <PasswordField fx:id="passwordField" maxWidth="300" promptText="Password" style="-fx-font-size: 16;" />
+        <PasswordField id="upass" fx:id="passwordField" maxWidth="300" promptText="Password" style="-fx-font-size: 16;" />
         <TextField fx:id="passwordTextField" managed="false" maxWidth="300" promptText="Password" style="-fx-font-size: 16;" visible="false" />
 
 
@@ -48,7 +48,7 @@
         </HBox>
 
 
-        <Button fx:id="loginButton" maxWidth="150" onAction="#handleLogin" style="-fx-font-size: 16; -fx-padding: 10 20;" text="Login" />
+        <Button id="loginBtn" fx:id="loginButton" maxWidth="150" onAction="#handleLogin" style="-fx-font-size: 16; -fx-padding: 10 20;" text="Login" />
       <HBox alignment="CENTER" prefHeight="56.0" prefWidth="181.0" spacing="5.0">
          <children>
             <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Don't have an account?">
