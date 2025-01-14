@@ -1,84 +1,118 @@
 package com.example.carrentalsystem.Controller;
 
-import com.example.carrentalsystem.Model.Vehicle;
+import com.example.carrentalsystem.Model.Car;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.scene.control.Alert;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
+import org.json.JSONObject;
+import org.json.JSONArray;
+import org.json.JSONException;
+
+import java.awt.event.ActionEvent;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
+
+
 
 public class InventoryController {
+    @FXML
+    private void handleAddButton() {
+        // Add your logic here to handle the button click
+        System.out.println("Add button clicked!");
+    }
+
+
 
     @FXML
-    private TextField CarNoInput;
-
+    private TableView<Car> tableView; // The TableView in FXML
     @FXML
-    private TextField VehicNameInput;
-
+    private TableColumn<Car, String> carNoColumn;
     @FXML
-    private TextField RegNameInput;
-
+    private TableColumn<Car, String> vehicleNameColumn;
     @FXML
-    private TextField ModelInput;
-
+    private TableColumn<Car, String> registrationNoColumn;
     @FXML
-    private TableView<Vehicle> tableView;
-
+    private TableColumn<Car, String> photoColumn;
     @FXML
-    private TableColumn<Vehicle, String> carNoColumn;
+    private TableColumn<Car, String> modelColumn;
 
-    @FXML
-    private TableColumn<Vehicle, String> vehicleNameColumn;
+    // Method to handle the data fetching and populating the table
+    public void fetchCarData() {
+        String urlString = "http://localhost/car-rental-api/retrieve_cars.php"; // Replace with your API URL
+        HttpURLConnection connection = null;
+        ObservableList<Car> carData = FXCollections.observableArrayList();
 
-    @FXML
-    private TableColumn<Vehicle, String> registrationNoColumn;
+        try {
+            // Create a URL object from the given string
+            URL url = new URL(urlString);
 
-    @FXML
-    private TableColumn<Vehicle, String> modelColumn;
+            // Open a connection to the URL
+            connection = (HttpURLConnection) url.openConnection();
+            connection.setRequestMethod("GET"); // Use GET method for fetching data
+            connection.setConnectTimeout(5000); // Set timeout in milliseconds
+            connection.setReadTimeout(5000); // Set read timeout in milliseconds
 
-    private ObservableList<Vehicle> vehicleList;
+            // Read the response
+            BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+            StringBuilder responseBuilder = new StringBuilder();
+            String line;
+            while ((line = reader.readLine()) != null) {
+                responseBuilder.append(line);
+            }
+            reader.close();
 
+            // Get the full response string
+            String jsonResponse = responseBuilder.toString();
+
+            // Parse the JSON response
+            JSONObject jsonObject = new JSONObject(jsonResponse);
+            String status = jsonObject.getString("status");
+
+            if ("success".equals(status)) {
+                JSONArray carsArray = jsonObject.getJSONArray("data");
+
+                // Loop through the array and process each car
+                for (int i = 0; i < carsArray.length(); i++) {
+                    JSONObject car = carsArray.getJSONObject(i);
+
+                    String carNo = car.getString("car_no");
+                    String vehicleName = car.getString("vehicle_name");
+                    String registrationNo = car.getString("registration_no");
+                    String photo = car.getString("photo");
+                    String model = car.getString("model");
+
+                    // Add each car to the ObservableList
+                    carData.add(new Car(carNo, vehicleName, registrationNo, photo, model));
+                }
+
+                // Populate the table with data
+                tableView.setItems(carData);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (connection != null) {
+                connection.disconnect();
+            }
+        }
+    }
+
+    // Initialize method to set the cell factories for the columns
     @FXML
     public void initialize() {
-        // Initialize columns
         carNoColumn.setCellValueFactory(new PropertyValueFactory<>("carNo"));
         vehicleNameColumn.setCellValueFactory(new PropertyValueFactory<>("vehicleName"));
         registrationNoColumn.setCellValueFactory(new PropertyValueFactory<>("registrationNo"));
+        photoColumn.setCellValueFactory(new PropertyValueFactory<>("photo"));
         modelColumn.setCellValueFactory(new PropertyValueFactory<>("model"));
 
-        // Initialize vehicle list
-        vehicleList = FXCollections.observableArrayList();
-        tableView.setItems(vehicleList);
-    }
-
-    @FXML
-    public void handleAddButton(javafx.event.ActionEvent event) {
-        // Get input values
-        String carNo = CarNoInput.getText();
-        String vehicleName = VehicNameInput.getText(); // Updated to match the correct variable name
-        String registrationNo = RegNameInput.getText();
-        String model = ModelInput.getText();
-
-        // Add new vehicle to the list
-        if (!carNo.isEmpty() && !vehicleName.isEmpty() && !registrationNo.isEmpty() && !model.isEmpty()) {
-            Vehicle vehicle = new Vehicle(carNo, vehicleName, registrationNo, model);
-            vehicleList.add(vehicle);
-
-            // Clear input fields
-            CarNoInput.clear();
-            VehicNameInput.clear();
-            RegNameInput.clear();
-            ModelInput.clear();
-        } else {
-            // Show an alert dialog if fields are empty
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle("Input Error");
-            alert.setHeaderText("Missing Fields");
-            alert.setContentText("All fields must be filled!");
-            alert.showAndWait();
-        }
+        // Fetch car data when the controller is initialized
+        fetchCarData();
     }
 }

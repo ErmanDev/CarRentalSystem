@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.lang.String?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.CheckBox?>
 <?import javafx.scene.control.PasswordField?>
@@ -14,54 +15,68 @@
 <?import javafx.scene.text.Text?>
 
 <AnchorPane prefHeight="488.0" prefWidth="741.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.carrentalsystem.Controller.RegisterController">
-   <Pane layoutX="7.0" layoutY="8.0" prefHeight="474.0" prefWidth="727.0">
+   <Pane layoutX="7.0" layoutY="8.0" prefHeight="518.0" prefWidth="727.0">
       <children>
-         <Text layoutX="117.0" layoutY="121.0" strokeType="OUTSIDE" strokeWidth="0.0" text="CAR RENTAL">
+         <Text layoutX="67.0" layoutY="139.0" strokeType="OUTSIDE" strokeWidth="0.0" text="CAR RENTAL">
             <font>
                <Font name="Futura Bold" size="33.0" />
             </font>
          </Text>
+           <Text layoutX="83.0" layoutY="91.0"  strokeType="OUTSIDE" strokeWidth="0.0" text="REGISTER">
+               <font>
+                   <Font name="Montserrat Bold" size="33.0" />
+               </font>
+           </Text>
+           <ImageView fitHeight="187.0" fitWidth="276.0" layoutX="50.0" layoutY="163.0" preserveRatio="true">
+               <image>
+                   <Image url="@../../../../Assets/car.png" />
+               </image>
+           </ImageView>
       </children></Pane>
 
     <!-- First Column: Car Cartoon or Logo -->
     <VBox alignment="CENTER" spacing="10" AnchorPane.leftAnchor="20" AnchorPane.topAnchor="20" />
 
     <!-- Second Column: Registration Form -->
-    <VBox alignment="CENTER" layoutX="368.0" layoutY="74.0" prefHeight="359.0" prefWidth="290.0" spacing="20" style="-fx-padding: 20; -fx-background-color: #ffffff; -fx-border-radius: 10; -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.2), 10, 0, 0, 0);" AnchorPane.rightAnchor="37.0" AnchorPane.topAnchor="74.0">
+    <VBox alignment="CENTER" layoutX="368.0" layoutY="22.4" prefHeight="495.0" prefWidth="367.0" spacing="20" style="-fx-padding: 20; -fx-background-color: #ffffff; -fx-border-radius: 10; -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.2), 10, 0, 0, 0);" AnchorPane.rightAnchor="16.0" AnchorPane.topAnchor="22.0">
+        <TextField fx:id="passwordTextField" managed="false" maxWidth="300" promptText="Password" style="-fx-font-size: 16;" visible="false" />
+        <TextField fx:id="confirmPasswordTextField" managed="false" maxWidth="300" promptText="Password" style="-fx-font-size: 16;" visible="false" />
+        <!-- Remember Me Checkbox -->
+        <HBox alignment="CENTER_LEFT" maxWidth="300" spacing="5" />
+      <TextField fx:id="firstnameField" maxWidth="300" promptText="Firstname" style="-fx-font-size: 16;" />
+      <TextField fx:id="lastnameField" maxWidth="300" promptText="Lastname" style="-fx-font-size: 16;" />
 
 
         <TextField fx:id="usernameField" maxWidth="300" promptText="Username" style="-fx-font-size: 16;" />
 
         <!-- Password Field -->
         <PasswordField fx:id="passwordField" maxWidth="300" promptText="Password" style="-fx-font-size: 16;" />
-        <TextField fx:id="passwordTextField" managed="false" maxWidth="300" promptText="Password" style="-fx-font-size: 16;" visible="false" />
 
         <!-- Confirm Password Field -->
         <PasswordField fx:id="confirmPasswordField" maxWidth="300" promptText="Confirm Password" style="-fx-font-size: 16;" />
-        <TextField fx:id="confirmPasswordTextField" managed="false" maxWidth="300" promptText="Password" style="-fx-font-size: 16;" visible="false" />
-        <!-- Remember Me Checkbox -->
-        <HBox alignment="CENTER_LEFT" maxWidth="300" spacing="5">
-            <CheckBox fx:id="rememberMeCheckBox" style="-fx-font-size: 14;" text="show password" />
-        </HBox>
-
-        <!-- Register Button -->
-        <Button fx:id="registerButton" maxWidth="150"  style="-fx-font-size: 16; -fx-padding: 10 20;" stylesheets="@style.css" text="Register" />
-      <HBox alignment="CENTER" fillHeight="false" prefHeight="120.0" prefWidth="250.0" spacing="5.0">
+      <HBox maxWidth="-Infinity" prefHeight="50.0" prefWidth="298.0">
+         <children>
+               <CheckBox fx:id="rememberMeCheckBox" style="-fx-font-size: 14;" text="show password" />
+         </children>
+      </HBox>
+      <Pane prefHeight="26.0" prefWidth="327.0">
+         <children>
+      
+              <!-- Register Button -->
+              <Button fx:id="registerButton" onAction="#handleRegister" layoutX="62.0" layoutY="-9.0" maxWidth="204.0" prefHeight="46.0" prefWidth="204.0" style="-fx-font-size: 16; -fx-padding: 10 20;" stylesheets="@style.css" text="Register">
+               <styleClass>
+                  <String fx:value="active-button" />
+                  <String fx:value="button" />
+               </styleClass>
+            </Button>
+         </children>
+      </Pane>
+      <HBox alignment="CENTER" fillHeight="false" prefHeight="50.0" prefWidth="327.0" spacing="5.0">
          <children>
             <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Already have an account?" />
             <Text fill="RED" onMouseClicked="#gotoLogin" strokeType="OUTSIDE" strokeWidth="0.0" text="Login" />
          </children>
       </HBox>
     </VBox>
-     <ImageView fitHeight="247.0" fitWidth="290.0" layoutX="80.0" layoutY="151.0" preserveRatio="true">
-         <image>
-             <Image url="@../../../../../../../../../CarRentalSystem/src/main/resources/images/logo.jpg" />
-         </image>
-     </ImageView>
-     <Text layoutX="481.0" layoutY="59.0" strokeType="OUTSIDE" strokeWidth="0.0" text="REGISTER">
-         <font>
-             <Font name="Montserrat Bold" size="33.0" />
-         </font>
-     </Text>
 
 </AnchorPane>

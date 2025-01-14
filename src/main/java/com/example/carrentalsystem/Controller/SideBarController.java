@@ -9,12 +9,18 @@ import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Node;
 import javafx.scene.Parent;
-import com.google.gson.JsonObject;
+
+import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.text.Text;
+import javafx.stage.Stage;
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.awt.*;
@@ -42,11 +48,9 @@ public class SideBarController {
 
 
 
-    @FXML
-    private JFXButton dashboardButton, inventoryButton, bookingsButton, customerButton, settingsButton, transactionsButton, maintenanceLogButton, bookingsReportButton, incomeExpensesButton;
 
     @FXML
-    private Text dashboardText, carNoDigit, customerNoDigit, carAvailableDigit;
+    private Text dashboardText, carNoDigit, customerNoDigit, carAvailableDigit, carRentedDigit;
 
     @FXML
     private Label userNameLabel;
@@ -81,34 +85,11 @@ public class SideBarController {
         loadPage("settings");
     }
 
-    // Event handler for the "Transactions" button
-    @FXML
-    private void transactions() {
-        dashboardText.setText("Transactions Selected");
-        System.out.println("Transactions button clicked");
-    }
+    private static Stage loginStage;
 
-    // Event handler for the "Maintenance Log" button
-    @FXML
-    private void maintenanceLog() {
-        dashboardText.setText("Maintenance Log Selected");
-        System.out.println("Maintenance Log button clicked");
+    public static Stage getLoginStage() {
+        return loginStage; // Provide access to the login stage
     }
-
-    // Event handler for the "Bookings Report" button
-    @FXML
-    private void bookingsReport() {
-        dashboardText.setText("Bookings Report Selected");
-        System.out.println("Bookings Report button clicked");
-    }
-
-    // Event handler for the "Income & Expenses" button
-    @FXML
-    private void incomeExpenses() {
-        dashboardText.setText("Income & Expenses Selected");
-        System.out.println("Income & Expenses button clicked");
-    }
-
     // Method to load pages based on button clicks
     private void loadPage(String page) {
         Parent root = null;
@@ -126,6 +107,10 @@ public class SideBarController {
         } else {
             System.err.println("Root is null. Cannot set center for page: " + page);
         }
+    }
+
+    public void setUsername(String username) {
+        userNameLabel.setText(username);
     }
 
 
@@ -156,11 +141,22 @@ public class SideBarController {
                                 int customerCount = Integer.parseInt(data.optString("customer_count", "0"));
                                 int availableCars = Integer.parseInt(data.optString("available_cars", "0"));
 
+                                // Extract rented cars data, which is an array
+                                JSONArray rentedCarsArray = data.optJSONArray("rented_cars");
+                                int rentedCarCount;
+                                if (rentedCarsArray != null) {
+                                    rentedCarCount = rentedCarsArray.length(); // Count the number of rented cars
+                                } else {
+                                    rentedCarCount = 0;
+                                }
+
+                                // Update the UI with fetched data
                                 Platform.runLater(() -> {
-                                    // Update the UI
                                     carNoDigit.setText(String.valueOf(carCount));
                                     customerNoDigit.setText(String.valueOf(customerCount));
                                     carAvailableDigit.setText(String.valueOf(availableCars));
+                                    carRentedDigit.setText(String.valueOf(rentedCarCount));
+
                                     System.out.println("UI updated successfully.");
                                 });
                             } else {
@@ -178,11 +174,11 @@ public class SideBarController {
                 }
                 return null;
             }
-
         };
 
         new Thread(fetchDataTask).start();
     }
+
 
     private void fetchCurrentUser() {
         Task<Void> fetchDataTask = new Task<>() {
@@ -234,18 +230,42 @@ public class SideBarController {
 
 
 
+    @FXML
+    private void logout(javafx.scene.input.MouseEvent mouseEvent) {
+        // Navigate to the login.fxml scene
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/carrentalsystem/View/login.fxml"));
+            Parent loginRoot = loader.load();
 
-    /**
-     * Prepare JSON data and print it to the console.
-     */
-    public void prepareJsonData() {
-        JsonObject jsonObject = new JsonObject();
-        jsonObject.addProperty("key", "value"); // Replace "key" and "value" with your actual data
-        System.out.println(jsonObject.toString()); // This prints the JSON to the console
+            // Get the current stage from the mouse event
+            Stage currentStage = (Stage) ((Node) mouseEvent.getSource()).getScene().getWindow();
+            currentStage.setScene(new Scene(loginRoot));
+            currentStage.setTitle("Login");
+            currentStage.centerOnScreen();
+        } catch (Exception e) {
+            e.printStackTrace();
+            showAlert(Alert.AlertType.ERROR, "Navigation Error", "Failed to load login.fxml: " + e.getMessage());
+        }
+    }
+
+    private void showAlert(Alert.AlertType alertType, String title, String message) {
+
+        Alert alert = new Alert(alertType);
+
+
+        alert.setTitle(title);
+
+
+        alert.setContentText(message);
+
+
+        alert.setHeaderText(null);
+
+
+        alert.showAndWait();
     }
 
 
-    // Call fetchCarData when the controller is initialized
     @FXML
     public void initialize() {
 fetchCurrentUser();
@@ -253,6 +273,7 @@ fetchCurrentUser();
 
 
     }
+
 }
 
 

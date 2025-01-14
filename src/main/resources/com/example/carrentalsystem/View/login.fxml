@@ -34,17 +34,12 @@
          </font>
       </Text>
 
-
-        <TextField id="uname" fx:id="usernameField" maxWidth="300" promptText="Username" style="-fx-font-size: 16;" />
-
-
-        <PasswordField id="upass" fx:id="passwordField" maxWidth="300" promptText="Password" style="-fx-font-size: 16;" />
-        <TextField fx:id="passwordTextField" managed="false" maxWidth="300" promptText="Password" style="-fx-font-size: 16;" visible="false" />
-
-
+        <TextField fx:id="usernameField" maxWidth="300" promptText="Username" style="-fx-font-size: 16;" />
+        <TextField fx:id="passwordTextField" managed="false" visible="false" maxWidth="300" promptText="Password" style="-fx-font-size: 16;" />
+        <PasswordField fx:id="passwordField" maxWidth="300" promptText="Password" style="-fx-font-size: 16;" />
 
         <HBox alignment="CENTER_LEFT" maxWidth="300" spacing="5">
-            <CheckBox fx:id="rememberMeCheckBox" prefWidth="211.0" text="show password" />
+            <CheckBox fx:id="rememberMeCheckBox" onAction="#jCheckBox" prefWidth="211.0" text="Show password" />
         </HBox>
 
 
@@ -61,6 +56,7 @@
                </font></Text>
          </children>
       </HBox>
+      <TextField fx:id="passwordTextField1" layoutX="10.0" layoutY="10.0" managed="false" maxWidth="300" promptText="Password" style="-fx-font-size: 16;" visible="false" />
     </VBox>
 
 </HBox>

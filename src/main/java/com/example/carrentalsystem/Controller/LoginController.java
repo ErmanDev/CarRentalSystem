@@ -9,13 +9,18 @@ import javafx.scene.control.CheckBox;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
+import org.json.JSONException;
+import org.json.JSONObject;
 
+import java.io.IOException;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Scanner;
 
 public class LoginController {
+    private Stage currentStage;
+
 
     @FXML
     private PasswordField passwordField;
@@ -30,41 +35,43 @@ public class LoginController {
     private TextField usernameField;
 
     @FXML
-    void initialize() {
-        // Initially hide the TextField and show PasswordField
-        passwordTextField.setVisible(false);
-        passwordField.setVisible(true);
-
-        // Add listener to rememberMeCheckBox to toggle visibility of password fields
-        rememberMeCheckBox.selectedProperty().addListener((observable, oldValue, newValue) -> {
-            if (newValue) {
-                // Show password in plain text
-                passwordField.setVisible(false);
-                passwordTextField.setVisible(true);
-                passwordTextField.setText(passwordField.getText()); // Transfer text from PasswordField to TextField
-            } else {
-                // Show password as masked (PasswordField)
-                passwordTextField.setVisible(false);
-                passwordField.setVisible(true);
-                passwordField.setText(passwordTextField.getText()); // Transfer text from TextField to PasswordField
-            }
-        });
+    private void jCheckBox() {
+        if (rememberMeCheckBox.isSelected()) {
+            passwordTextField.setText(passwordField.getText());
+            passwordTextField.setVisible(true);
+            passwordTextField.setManaged(true);
+            passwordField.setVisible(false);
+            passwordField.setManaged(false);
+        } else {
+            passwordField.setText(passwordTextField.getText());
+            passwordField.setVisible(true);
+            passwordField.setManaged(true);
+            passwordTextField.setVisible(false);
+            passwordTextField.setManaged(false);
+        }
     }
+
+
+
+
 
     @FXML
     void handleLogin() {
         String username = usernameField.getText();
         String password = rememberMeCheckBox.isSelected() ? passwordTextField.getText() : passwordField.getText();
 
+        // Validate input
         if (username.isEmpty() || password.isEmpty()) {
             showAlert(Alert.AlertType.WARNING, "Validation Error", "Please enter both username and password.");
             return;
         }
 
+        HttpURLConnection connection = null;
+
         try {
             // API URL
             URL url = new URL("http://localhost/car-rental-api/login.php"); // Replace with your actual API URL
-            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+            connection = (HttpURLConnection) url.openConnection();
 
             // Set request properties
             connection.setRequestMethod("POST");
@@ -82,46 +89,108 @@ public class LoginController {
 
             // Get the response
             int responseCode = connection.getResponseCode();
+
             if (responseCode == HttpURLConnection.HTTP_OK) {
-                try (Scanner scanner = new Scanner(connection.getInputStream())) {
-                    StringBuilder response = new StringBuilder();
+                // Read and parse the response
+                StringBuilder response = new StringBuilder();
+                try (Scanner scanner = new Scanner(connection.getInputStream(), "utf-8")) {
                     while (scanner.hasNext()) {
                         response.append(scanner.nextLine());
                     }
+                }
 
-                    // Handle response (Assume it's JSON)
-                    String responseBody = response.toString();
-                    if (responseBody.contains("Login successful")) {
-                        showAlert(Alert.AlertType.INFORMATION, "Success", "Login successful!");
-                        navigateToHome();
+                // Parse the JSON response
+                JSONObject jsonResponse = new JSONObject(response.toString());
+                if (jsonResponse.has("message") && "Login successful".equals(jsonResponse.getString("message"))) {
+                    String role = jsonResponse.optString("role", "client"); // Default to "client" if not provided
+
+                    // Show success alert
+                    showAlert(Alert.AlertType.INFORMATION, "Success", "Login successful!");
+
+                    // Load the appropriate FXML based on role
+                    Stage currentStage = (Stage) usernameField.getScene().getWindow();
+                    FXMLLoader loader;
+                    Parent root;
+
+                    if ("client".equals(role)) {
+                        loader = new FXMLLoader(getClass().getResource("/com/example/carrentalsystem/View/client/client.fxml"));
+                        root = loader.load();
+                        ClientController clientController = loader.getController();
+                        clientController.setUsername(username);
                     } else {
-                        showAlert(Alert.AlertType.ERROR, "Login Failed", "Invalid username or password.");
+                        loader = new FXMLLoader(getClass().getResource("/com/example/carrentalsystem/View/home.fxml"));
+                        root = loader.load();
+                        SideBarController sideBarController = loader.getController();
+                        sideBarController.setUsername(username);
                     }
+
+                    // Set the new scene
+                    currentStage.setScene(new Scene(root));
+                    currentStage.centerOnScreen();
+                    currentStage.show();
+
+                } else {
+                    // Login failed
+                    String errorMessage = jsonResponse.optString("error", "Invalid username or password.");
+                    showAlert(Alert.AlertType.ERROR, "Login Failed", errorMessage);
                 }
             } else {
-                showAlert(Alert.AlertType.ERROR, "Error", "Failed to connect to the server. Response code: " + responseCode);
+                // Handle server errors
+                showAlert(Alert.AlertType.ERROR, "Server Error", "Server returned response code: " + responseCode);
             }
-
+        } catch (IOException e) {
+            // Handle connection and I/O errors
+            showAlert(Alert.AlertType.ERROR, "Connection Error", "Could not connect to the server: " + e.getMessage());
+            e.printStackTrace();
+        } catch (JSONException e) {
+            // Handle JSON parsing errors
+            showAlert(Alert.AlertType.ERROR, "Response Error", "Could not parse server response: " + e.getMessage());
+            e.printStackTrace();
         } catch (Exception e) {
-            showAlert(Alert.AlertType.ERROR, "Error", "An error occurred: " + e.getMessage());
+            // Handle unexpected exceptions
+            showAlert(Alert.AlertType.ERROR, "Error", "An unexpected error occurred: " + e.getMessage());
+            e.printStackTrace();
+        } finally {
+            // Ensure the connection is closed
+            if (connection != null) {
+                connection.disconnect();
+            }
         }
     }
 
-    private void navigateToHome() {
+
+    private String extractRoleFromResponse(String responseBody) {
+
         try {
-            // Load the home.fxml file
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/carrentalsystem/View/home.fxml"));
-            Parent homeRoot = loader.load();
-
-            // Get the current stage (window) and set the new scene
-            Stage currentStage = (Stage) usernameField.getScene().getWindow();
-            currentStage.setScene(new Scene(homeRoot));
-            currentStage.setTitle("Home");
-
-        } catch (Exception e) {
-            showAlert(Alert.AlertType.ERROR, "Navigation Error", "Failed to load home.fxml: " + e.getMessage());
+            JSONObject jsonResponse = new JSONObject(responseBody);
+            return jsonResponse.getString("role");
+        } catch (JSONException e) {
+            e.printStackTrace();
+            return "";
         }
     }
+
+    private void navigateToScene(Stage stage, String fxmlFile) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/carrentalsystem/View/" + fxmlFile));
+            Parent root = loader.load();
+
+            // Set the scene only after successfully loading the FXML file
+            stage.setScene(new Scene(root));
+
+
+            // Center the stage on the screen
+            stage.centerOnScreen();
+            stage.show();
+
+        } catch (IOException e) {
+            // Handle the exception and show an alert if navigation fails
+            e.printStackTrace();
+            showAlert(Alert.AlertType.ERROR, "Navigation Error", "Failed to load " + fxmlFile + ": " + e.getMessage());
+        }
+    }
+
+
 
     @FXML
     private void goToRegister(javafx.scene.input.MouseEvent mouseEvent) {
@@ -133,7 +202,6 @@ public class LoginController {
             // Get the current stage
             Stage currentStage = (Stage) usernameField.getScene().getWindow();
             currentStage.setScene(new Scene(registerRoot));
-            currentStage.setTitle("Register");
         } catch (Exception e) {
             e.printStackTrace();
             showAlert(Alert.AlertType.ERROR, "Navigation Error", "Failed to load register.fxml: " + e.getMessage());

@@ -22,7 +22,7 @@
                <graphic>
                   <ImageView fitHeight="36.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
                      <image>
-                        <Image url="@../../../../Assets/home.png" />
+                        <Image url="@../../../../../Assets/home.png" />
                      </image>
                   </ImageView>
                </graphic>
@@ -34,7 +34,7 @@
                <graphic>
                   <ImageView fitHeight="36.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
                      <image>
-                        <Image url="@../../../../Assets/available.png" />
+                        <Image url="@../../../../../Assets/available.png" />
                      </image>
                   </ImageView>
                </graphic>
@@ -46,7 +46,7 @@
                <graphic>
                   <ImageView fitHeight="36.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
                      <image>
-                        <Image url="@../../../../Assets/bookings.png" />
+                        <Image url="@../../../../../Assets/bookings.png" />
                      </image>
                   </ImageView>
                </graphic>
@@ -69,7 +69,7 @@
                <graphic>
                   <ImageView fitHeight="36.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
                      <image>
-                        <Image url="@../../../../Assets/support.png" />
+                        <Image url="@../../../../../Assets/support.png" />
                      </image>
                   </ImageView>
                </graphic>
@@ -81,7 +81,7 @@
                <graphic>
                   <ImageView fitHeight="36.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
                      <image>
-                        <Image url="@../../../../Assets/profile_1.png" />
+                        <Image url="@../../../../../Assets/profile_1.png" />
                      </image>
                   </ImageView>
                </graphic>
@@ -94,7 +94,7 @@
                <graphic>
                   <ImageView fitHeight="36.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
                      <image>
-                        <Image url="@../../../../Assets/logout.png" />
+                        <Image url="@../../../../../Assets/logout.png" />
                      </image>
                   </ImageView>
                </graphic>
@@ -118,17 +118,17 @@
                   </Label>
                   <ImageView fitHeight="55.0" fitWidth="67.0" pickOnBounds="true" preserveRatio="true">
                      <image>
-                        <Image url="@../../../../../../../../../CarRentalSystem/src/main/resources/images/pngtree-v-letter-abc-beauty-logotype-vector-png-image_39903460.png" />
+                        <Image url="@../../../../../../../../../../CarRentalSystem/src/main/resources/images/pngtree-v-letter-abc-beauty-logotype-vector-png-image_39903460.png" />
                      </image>
                   </ImageView>
                </children>
             </HBox>
-            <HBox prefHeight="63.0" prefWidth="626.0" spacing="70.0" stylesheets="@style.css" />
+            <HBox prefHeight="63.0" prefWidth="626.0" spacing="70.0" stylesheets="@../style.css" />
             <HBox alignment="CENTER_LEFT" nodeOrientation="LEFT_TO_RIGHT" prefHeight="63.0" prefWidth="257.0">
                <children>
                   <ImageView fitHeight="50.0" fitWidth="57.0" pickOnBounds="true" preserveRatio="true">
                      <image>
-                        <Image url="@../../../../Assets/profile.png" />
+                        <Image url="@../../../../../Assets/profile.png" />
                      </image>
                   </ImageView>
                   <VBox alignment="CENTER" prefHeight="63.0" prefWidth="187.0">
@@ -138,6 +138,7 @@
                               <Font name="Arial Bold" size="16.0" />
                            </font>
                         </Label>
+
                      </children>
                   </VBox>
                </children>
@@ -148,7 +149,7 @@
    <center>
       <AnchorPane fx:id="ap" prefHeight="620.0" prefWidth="831.0" style="-fx-background-color: FFFFFFF;" BorderPane.alignment="CENTER">
          <children>
-            <HBox prefHeight="50.0" prefWidth="879.0" style="-fx-background-color: #1591ea;">
+            <HBox prefHeight="58.0" prefWidth="879.0" style="-fx-background-color: #1591ea;">
                <children>
                   <Text fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" text="Ready to hit the road?" textAlignment="CENTER">
                      <font>

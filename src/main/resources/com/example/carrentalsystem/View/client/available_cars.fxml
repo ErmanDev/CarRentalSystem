@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<HBox minHeight="-Infinity" minWidth="-Infinity" prefHeight="610.0" prefWidth="780.0" style="-fx-background-color: #1591ea;" xmlns="http://javafx.com/javafx/11.0.14-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.carrentalsystem.Controller.AvailableCarsController">
+
+    <!-- ScrollPane to allow scrolling of car cards -->
+    <ScrollPane fx:id="scrollPane" fitToHeight="true" fitToWidth="true">
+        <VBox fx:id="carCardsContainer" spacing="20" style="-fx-padding: 20;">
+            <!-- Car Card will be loaded dynamically here -->
+        </VBox>
+    </ScrollPane>
+
+</HBox>

@@ -97,6 +97,19 @@
                   <Font size="19.0" />
                </font>
             </JFXButton>
+            <Pane prefHeight="163.0" prefWidth="218.0" />
+            <JFXButton fx:id="logoutButton" onMouseClicked="#logout" prefHeight="55.0" prefWidth="326.0" text="Logout" textAlignment="CENTER">
+               <graphic>
+                  <ImageView fitHeight="36.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../../../../Assets/logout.png" />
+                     </image>
+                  </ImageView>
+               </graphic>
+               <font>
+                  <Font size="19.0" />
+               </font>
+            </JFXButton>
          </children>
       </VBox>
    </left>
@@ -128,7 +141,7 @@
                   </ImageView>
                   <VBox alignment="CENTER" prefHeight="63.0" prefWidth="187.0">
                      <children>
-                        <Label  fx:id="userNameLabel" text="Welcome!">
+                        <Label fx:id="userNameLabel" text="Welcome!">
                            <font>
                               <Font name="Arial Bold" size="16.0" />
                            </font>
@@ -148,42 +161,61 @@
    <center>
       <AnchorPane fx:id="ap" prefHeight="620.0" prefWidth="831.0" style="-fx-background-color: FFFFFFF;" BorderPane.alignment="CENTER">
          <children>
-            <Pane layoutX="19.0" layoutY="24.0" prefHeight="144.0" prefWidth="239.0" style="-fx-background-color: #E5E4E2;">
+            <Pane layoutX="14.0" layoutY="15.0" prefHeight="135.0" prefWidth="201.0" styleClass="background-color" stylesheets="@style.css">
                <children>
-                  <Text layoutX="3.0" layoutY="124.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Car No." textAlignment="CENTER" wrappingWidth="239.73665618896484">
+                  <Text layoutX="-20.0" layoutY="124.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Car No." textAlignment="CENTER" wrappingWidth="239.73665618896484">
                      <font>
                         <Font size="30.0" />
                      </font>
                   </Text>
-                  <Text fx:id="carNoDigit" layoutX="7.0" layoutY="79.0" strokeType="OUTSIDE" strokeWidth="0.0" text="0" textAlignment="CENTER" wrappingWidth="244.16299438476562">
+                  <Text fx:id="carNoDigit" layoutX="-22.0" layoutY="73.0" strokeType="OUTSIDE" strokeWidth="0.0" text="0" textAlignment="CENTER" wrappingWidth="244.16299438476562">
                      <font>
                         <Font size="75.0" />
                      </font>
                   </Text>
                </children>
             </Pane>
-            <Pane layoutX="278.0" layoutY="24.0" prefHeight="142.0" prefWidth="246.0" style="-fx-background-color: #E5E4E2;">
+            <Pane layoutX="227.0" layoutY="15.0" prefHeight="136.0" prefWidth="206.0" styleClass="background-color" stylesheets="@style.css">
                <children>
-                  <Text layoutX="4.0" layoutY="124.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Customer" textAlignment="CENTER" wrappingWidth="239.73665618896484">
+                  <Text layoutX="-9.0" layoutY="121.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Customer" textAlignment="CENTER" wrappingWidth="239.73665618896484">
                      <font>
                         <Font size="30.0" />
                      </font>
                   </Text>
-                  <Text fx:id="customerNoDigit" layoutX="-1.0" layoutY="78.0" strokeType="OUTSIDE" strokeWidth="0.0" text="0" textAlignment="CENTER" wrappingWidth="252.69625854492188">
+                  <Text fx:id="customerNoDigit" layoutX="-16.0" layoutY="70.0" strokeType="OUTSIDE" strokeWidth="0.0" text="0" textAlignment="CENTER" wrappingWidth="252.69625854492188">
                      <font>
                         <Font size="75.0" />
                      </font>
                   </Text>
                </children>
             </Pane>
-            <Pane layoutX="545.0" layoutY="23.0" prefHeight="144.0" prefWidth="239.0" style="-fx-background-color: #E5E4E2;">
+            <Pane layoutX="446.0" layoutY="14.0" prefHeight="138.0" prefWidth="207.0" styleClass="background-color" stylesheets="@style.css">
                <children>
-                  <Text layoutY="124.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Car Available" textAlignment="CENTER" wrappingWidth="239.73665618896484">
+                  <Text layoutX="-16.0" layoutY="125.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Car Available" textAlignment="CENTER" wrappingWidth="239.73665618896484">
                      <font>
                         <Font size="30.0" />
                      </font>
                   </Text>
-                  <Text fx:id="carAvailableDigit" layoutX="-8.0" layoutY="74.0" strokeType="OUTSIDE" strokeWidth="0.0" text="0" textAlignment="CENTER" wrappingWidth="252.69625854492188">
+                  <Text fx:id="carAvailableDigit" layoutX="-29.0" layoutY="73.0" strokeType="OUTSIDE" strokeWidth="0.0" text="0" textAlignment="CENTER" wrappingWidth="252.69625854492188">
+                     <font>
+                        <Font size="75.0" />
+                     </font>
+                  </Text>
+               </children>
+            </Pane>
+            <ImageView fitHeight="327.0" fitWidth="720.0" layoutX="120.0" layoutY="221.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../../../../Assets/images.jpg" />
+               </image>
+            </ImageView>
+            <Pane layoutX="662.0" layoutY="14.0" prefHeight="138.0" prefWidth="207.0" styleClass="background-color" stylesheets="@style.css">
+               <children>
+                  <Text layoutX="-16.0" layoutY="125.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Car Rented" textAlignment="CENTER" wrappingWidth="239.73665618896484">
+                     <font>
+                        <Font size="30.0" />
+                     </font>
+                  </Text>
+                  <Text fx:id="carRentedDigit" layoutX="-23.0" layoutY="74.0" strokeType="OUTSIDE" strokeWidth="0.0" text="0" textAlignment="CENTER" wrappingWidth="252.69625854492188">
                      <font>
                         <Font size="75.0" />
                      </font>
